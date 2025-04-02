@@ -5,6 +5,7 @@ from .models import Tenants
 class TenantMiddleware(MiddlewareMixin):
     def process_request(self, request):
         path = request.path.strip('/').split('/')
+        print(path)
         
         if len(path) < 2:
             return JsonResponse({'error': 'Invalid request path'}, status=400)
@@ -16,5 +17,6 @@ class TenantMiddleware(MiddlewareMixin):
             return JsonResponse({'error': 'Invalid tenant'}, status=404)
 
         request.tenant = tenant
-        request.path = "/" + "/".join(newpath)  
+        request.path_info = "/" + "/".join(newpath) 
+        print(request.path_info)
 

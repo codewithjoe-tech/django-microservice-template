@@ -55,16 +55,15 @@ MIDDLEWARE = [
 ]
 
 
-
-CORS_ALLOWED_ORIGINS = [
-    "http://localhost:3000", 
-    "http://127.0.0.1:3000",
-    "https://ms-blogs.com",  
+import re
+CORS_ALLOWED_ORIGIN_REGEXES = [
+    r"^http?:\/\/localhost(:\d+)?$",
+    r"^http?:\/\/([a-zA-Z0-9-]+)\.localhost(:\d+)?$",
 ]
 
+
 CSRF_TRUSTED_ORIGINS = [
-    "https://ms-blogs.com",
-    "http://localhost:3000"
+    "http://localhost:3000", 
 ]
 
 CORS_ALLOW_HEADERS = [
@@ -76,11 +75,9 @@ CORS_ALLOW_HEADERS = [
     "accept-encoding",
     "origin",
 ]
+CORS_ALLOW_CREDENTIALS = True
 
 
-CSRF_TRUSTED_ORIGINS = [
-    "http://localhost:3000"
-]
 
 ROOT_URLCONF = 'mysite.urls'
 
@@ -114,16 +111,13 @@ REST_FRAMEWORK  = {
 
 
 
-# Database
-# https://docs.djangoproject.com/en/5.1/ref/settings/#databases
-
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'service',
-        'USER': '',
-        'PASSWORD': '',
-        'HOST': 'postgres',  
+        'NAME': 'webbuilder_service',
+        'USER': 'root',
+        'PASSWORD': 'root',
+        'HOST': 'rootdb',  
         'PORT': '5432',
     }
 }
