@@ -11,7 +11,7 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 """
 
 from pathlib import Path
-
+import os
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -20,7 +20,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-2p#tce3n5c4@c&2d4pk7tbm^1^^-b44c%hxbet4t*wfcx1tcf)'
+SECRET_KEY = os.getenv('SECRET_KEY','kad;flkjasf;lkj')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'corsheaders',
      'rest_framework',
     'app',
+     'channels',
 ]
 
 MIDDLEWARE = [
@@ -98,27 +99,47 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'mysite.wsgi.application'
+ASGI_APPLICATION = 'mysite.wsgi.application'
 
-REST_FRAMEWORK  = {
-    'DEFAULT_AUTHENTICATION_CLASSES': (
-       'app.authenticate.CustomJwtAuthentication',
-    ),
-    'DEFAULT_PERMISSION_CLASSES': (
-       'rest_framework.permissions.IsAuthenticated',
-    ),
-    
+CHANNEL_LAYERS = {
+    'default': {
+        'BACKEND': 'channels_redis.core.RedisChannelLayer',
+        'CONFIG': {
+            "hosts": [('redis', 6379)],  
+            "password": "root", 
+        },
+    },
 }
+
 
 
 
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'webbuilder_service',
+        'NAME': 'community_service',
         'USER': 'root',
         'PASSWORD': 'root',
         'HOST': 'rootdb',  
         'PORT': '5432',
+    }
+}
+
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'app.authenticate.CustomJwtAuthentication',
+    ],
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.IsAuthenticated',
+    ],
+    'DEFAULT_THROTTLE_CLASSES': [
+        'rest_framework.throttling.UserRateThrottle',
+        'rest_framework.throttling.AnonRateThrottle',
+    ],
+    'DEFAULT_THROTTLE_RATES': {
+        'user': '20/min',
+        'anon': '10/min',
     }
 }
 
